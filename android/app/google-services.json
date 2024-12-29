@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "567808682271",
+    "project_id": "revise1-a63dd",
+    "storage_bucket": "revise1-a63dd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567808682271:android:c4c80864f8f75b0acb282a",
+        "android_client_info": {
+          "package_name": "com.example.revise1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeaTzpZivMm5b2M7y8ZYAv29AK8u3bjgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
