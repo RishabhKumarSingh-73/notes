@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +15,13 @@ class EnterDetailsAlertDialog extends StatefulWidget {
 class _EnterDetailsAlertDialogState extends State<EnterDetailsAlertDialog> {
 
   final TextEditingController note = TextEditingController();
+    String? userid = FirebaseAuth.instance.currentUser!.email;
 
-  void onClick(String note){
+
+  void onClick(String note)async{
+    await FirebaseFirestore.instance.collection('users').doc(userid).update({
+      'notes': FieldValue.arrayUnion([note])
+    });
     Provider.of<notesProvider>(context,listen: false).addNotes(note);
     Navigator.of(context).pop();
   }

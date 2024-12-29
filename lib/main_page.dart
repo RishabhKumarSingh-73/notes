@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
+  String? userid = FirebaseAuth.instance.currentUser!.email;
+
   void delete(String note){
+    FirebaseFirestore.instance.collection('users').doc(userid).update({
+      'notes': FieldValue.arrayRemove([note])
+    });
     Provider.of<notesProvider>(context,listen: false).deleteNotes(note);
   }
 
@@ -34,16 +40,32 @@ class _MainPageState extends State<MainPage> {
         ],
         
       ),
-      body: Container(
-          child:ListView.builder(
-            itemCount: provider.notes.length,
-            itemBuilder:(context,index){
-              return ListTile(
-                title:  Text(provider.notes[index]),
-                trailing: IconButton(icon: const Icon(Icons.delete), onPressed:()=>delete(provider.notes[index]) )
-                );
-            }
-      ),),
+      body: FutureBuilder(
+        future: FirebaseFirestore.instance.collection('users').doc(userid).get(),
+        builder: (context,snapshot){
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator());
+          }
+          if(!snapshot.hasData){
+            return Text("no data");
+          }
+
+          final data = snapshot.data!.data() as Map<String,dynamic>;
+          final notes = (data['notes'] as List<dynamic>).map((ele)=> ele.toString()).toList();
+          return Container(
+            child:ListView.builder(
+              itemCount: notes.length,
+              itemBuilder:(context,index){
+                return ListTile(
+                  title:  Text(notes[index]),
+                  trailing: IconButton(icon: const Icon(Icons.delete), onPressed:()=>delete(notes[index]) )
+                  );
+              }
+        ),);
+          }
+      ),
+        
+      
       floatingActionButton: ElevatedButton(
         onPressed: (){
           showDialog(

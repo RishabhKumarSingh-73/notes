@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:revise1/login_page.dart';
@@ -17,11 +18,17 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
 
   void onClick() async{
-    final userCredentials = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+
+    try{
+      final userCredentials = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
     if(userCredentials.user != null){
+        await FirebaseFirestore.instance.collection('users').doc(emailController.text).set({
+          'notes':[]
+        });
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeOrRegister()));
       }
     print(userCredentials);
+    }catch(e){print(e);}
   }
 
   @override
