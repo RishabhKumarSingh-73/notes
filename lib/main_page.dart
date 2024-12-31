@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 import 'package:revise1/enter_notes_alert_dialog.dart';
 import 'package:revise1/main.dart';
-import 'package:revise1/notes_provider.dart';
+// import 'package:revise1/notes_provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
     FirebaseFirestore.instance.collection('users').doc(userid).update({
       'notes': FieldValue.arrayRemove([note])
     });
-    Provider.of<notesProvider>(context,listen: false).deleteNotes(note);
+    // Provider.of<notesProvider>(context,listen: false).deleteNotes(note);
   }
 
   void logout()async{
@@ -30,7 +30,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<notesProvider>(context);
+    // final provider = Provider.of<notesProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
@@ -40,8 +40,8 @@ class _MainPageState extends State<MainPage> {
         ],
         
       ),
-      body: FutureBuilder(
-        future: FirebaseFirestore.instance.collection('users').doc(userid).get(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('users').doc(userid).snapshots(),
         builder: (context,snapshot){
           if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(child: CircularProgressIndicator());
